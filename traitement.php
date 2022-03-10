@@ -19,12 +19,12 @@ if (isset($_GET['action'])) {
             header("Location:inscription.php");
             die;
         case "connexion":
-            if (isset($_POST['submit']) && isset($_SESSION['utilisateurs'])) {
+            if (isset($_POST['submit'])) {
                 $pseudo = filter_input(INPUT_POST, "pseudo", FILTER_UNSAFE_RAW);
                 $mdp = filter_input(INPUT_POST, "mdp", FILTER_UNSAFE_RAW);
 
                 connexionUtilisateur($pseudo, $mdp) ?
-                    header("Location:connecte.php") :
+                    header("Location:index.php") :
                     header("Location:connexion.php") ;
                 die;
             }
@@ -36,7 +36,6 @@ if (isset($_GET['action'])) {
             session_unset();
     }
 }
-
 header("Location:index.php");
 
 function ajoutUtilisateur($pseudo, $email, $mdp, $mdp_verif) {
@@ -77,17 +76,26 @@ function ajoutUtilisateur($pseudo, $email, $mdp, $mdp_verif) {
 }
 
 function connexionUtilisateur($pseudo, $mdp) {
-    $utilisateur_key = array_search($pseudo, array_column($_SESSION['utilisateurs'],'pseudo'));
-    $utilisateur = $_SESSION['utilisateurs'][$utilisateur_key];
-
-    if (password_verify($mdp, $utilisateur['mdp'])) {
-        $_SESSION["message"] = "Connexion validée !";
-        $_SESSION["utilisateurConnecte"] = $utilisateur;
-        return true;
-    } else {
-        $_SESSION["message"] = "Mot de passe non valide";
+    if (! isset($_SESSION['utilisateurs'])) {
+        $_SESSION["message"] = "Utilisateur non répertorié";
         return false;
-    }    
+    } else {
+        $utilisateur_key = array_search($pseudo, array_column($_SESSION['utilisateurs'],'pseudo'));
+        if ($utilisateur_key === false) {
+            $_SESSION["message"] = "Pseudo non répertorié";
+            return false;
+        } else {
+            $utilisateur = $_SESSION['utilisateurs'][$utilisateur_key];
+            if (password_verify($mdp, $utilisateur['mdp'])) {
+                $_SESSION["message"] = "Bonjour ".$utilisateur['pseudo']." !";
+                $_SESSION["utilisateurConnecte"] = $utilisateur;
+                return true;
+            } else {
+                $_SESSION["message"] = "Mot de passe non valide";
+                return false;
+            }    
+        }
+    }
 }
 
 function deconnexionUtilisateur() {

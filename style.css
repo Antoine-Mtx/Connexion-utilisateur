@@ -1,6 +1,31 @@
 body {
-    max-width: 400px;
+    max-width: 540px;
     margin: auto;
+}
+
+#banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+} 
+
+#logo {
+    height: 4em;
+    width: 4em;
+    object-fit: cover;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    justify-content: space-evenly;
+    text-transform: uppercase;
+}
+
+#connexion_main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 form {
@@ -8,6 +33,10 @@ form {
     flex-direction: column;
     align-items: flex-start;
     gap: 1em;
+}
+
+.form_button {
+    align-self: center;
 }
 
 .form {
